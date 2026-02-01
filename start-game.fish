@@ -90,8 +90,11 @@ sudo mount -t overlay overlay \
     "$run_dir"
 
 hdr "Starting $game, have fun!"
+
+cd "$run_dir"
 env \
     STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam" \
     STEAM_COMPAT_DATA_PATH="$compatdata_dir" \
+    WINEDLLOVERRIDES="winmm,version=n,b" \
     "$HOME/.steam/steam/steamapps/common/Proton - Experimental/proton" \
     waitforexitandrun "$game_executable" >/dev/null 2>&1
