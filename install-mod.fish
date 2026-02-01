@@ -16,6 +16,11 @@ if test (count $argv) -ne 2
     exit 1
 end
 
+if not command -q gum
+    err "gum is not installed"
+    exit 1
+end
+
 set game $argv[1]
 set archive (realpath $argv[2])
 
@@ -130,7 +135,7 @@ set target_dir "$mods_dir/$mod_name"
 
 if test -e "$target_dir"
     if gum confirm "Overwrite?"
-        step "Removing existing folder"
+        step "Removing: $target_dir"
         rm -rf "$target_dir"
     else
         err "Target mod directory already exists: $target_dir"
@@ -145,11 +150,33 @@ step "Destination: $target_dir"
 
 switch (string lower "$archive")
     case '*.zip'
-        unzip -q "$archive" -d "$target_dir"
+        if not command -q unzip
+            err "Missing required tool: unzip"
+            exit 1
+        end
     case '*.7z'
-        7z x "$archive" -o"$target_dir" >/dev/null
+        if not command -q 7z
+            err "Missing required tool: 7z"
+            exit 1
+        end
     case '*.rar'
-        unrar x "$archive" "$target_dir" >/dev/null
+        if not command -q unrar
+            err "Missing required tool: unrar"
+            exit 1
+        end
+    case '*'
+        err "Unsupported archive format: $archive"
+        rm -rf "$target_dir"
+        exit 1
+end
+
+switch (string lower "$archive")
+    case '*.zip'
+        gum spin --title "Extracting archive" -- unzip -q "$archive" -d "$target_dir"
+    case '*.7z'
+        gum spin --title "Extracting archive" -- 7z x "$archive" -o"$target_dir" >/dev/null
+    case '*.rar'
+        gum spin --title "Extracting archive" -- unrar x "$archive" "$target_dir" >/dev/null
     case '*'
         err "Unsupported archive format: $archive"
         rm -rf "$target_dir"
@@ -159,7 +186,5 @@ end
 ok "Installation complete"
 
 if test $keep_archive -eq 0
-    step "Removing archive"
     rm -f "$archive"
-    ok "Archive deleted"
 end

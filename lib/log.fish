@@ -1,6 +1,6 @@
 set -g C_HDR (set_color 00ffff)
 set -g C_STEP (set_color 008b8b)
-set -g C_OK (set_color 00ff00)
+set -g C_OK (set_color 00ffff)
 set -g C_WARN (set_color ffff00)
 set -g C_ERR (set_color ff5555)
 set -g C_RST (set_color normal)
