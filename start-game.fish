@@ -48,8 +48,8 @@ function __cleanup --on-event fish_exit
         return
     end
 
-    set max_retries 5
-    set delay 0.5
+    set max_retries 10
+    set delay 1
 
     for attempt in (seq 1 $max_retries)
         if sudo umount "$run_dir" 2>/dev/null
