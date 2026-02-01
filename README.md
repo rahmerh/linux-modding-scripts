@@ -54,6 +54,10 @@ Install mod from the downloaded archive into the game's mods folder. Add `--keep
 
 Starts the game from the `run` dir with all mods overlayed. Will start an overlayfs mount before starting and will unmount after the game exits.
 
+`list.fish <game-name>`
+
+Lists all installed mods in the game's `mods` dir.
+
 ## Supported games
 
 - Cyberpunk 2077
