@@ -68,3 +68,4 @@ Lists all installed mods in the game's `mods` dir.
 - [ ] Configurable proton version
 - [ ] General configuration (game or install paths)
 - [ ] Nexus mods integration (Downloading games using their API)
+- [ ] Optimize the way mods are merged (Merge on install new mod or separate "merge" script)
