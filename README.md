@@ -60,5 +60,7 @@ Starts the game from the `run` dir with all mods overlayed. Will start an overla
 
 ## Roadmap
 
+- [ ] Validate extracted archive folder structure
 - [ ] Configurable proton version
+- [ ] General configuration (game or install paths)
 - [ ] Nexus mods integration (Downloading games using their API)
