@@ -2,6 +2,7 @@
 
 set script_dir (path dirname (status --current-filename))
 source "$script_dir/lib/log.fish"
+source "$script_dir/lib/games.fish"
 
 if test (count $argv) -ne 1
     err "Usage: list.fish <game-name>"
@@ -9,6 +10,11 @@ if test (count $argv) -ne 1
 end
 
 set game $argv[1]
+set game (resolve_game "$game"; or begin
+    err "Unknown game: $game"
+    exit 1
+end)
+
 set root "$PWD/$game"
 set mods_dir "$root/mods"
 

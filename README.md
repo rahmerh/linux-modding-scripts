@@ -10,6 +10,8 @@ The core idea is:
 
 These scripts are intentionally **folder-based** and avoid hidden state. This does result in some some manual setup in certain situations.
 
+Currently, these script are only for steam games using proton.
+
 ## How it works
 
 Before launch:
@@ -22,6 +24,8 @@ Before launch:
 The game is then launched from the overlay mount and, once the game exits, the mount is cleaned up.
 
 Merging the mods is done in alphabetical order of the mods folders. The install script automatically prefixes a 3 digit number to the folder name. You're free to reorder this load order by changing this manually.
+
+This merge is only done when running the `rebuild-mods.fish` script. Optionally also runs when you provide the `--rebuild` flag when using the `install-mod.fish` script.
 
 ## Folder layout
 
@@ -46,21 +50,33 @@ This folder structure will be created automatically when running the scripts. Th
 
 ## Usage
 
-`install-mod.fish <game-name> <archive-path>`
+`install-mod.fish <game-name> <archive-path> [--keep-archive] [--rebuild]`
 
-Install mod from the downloaded archive into the game's mods folder. Add `--keep-archive` to prevent the archive from being deleted on completion.
+Install mod from the downloaded archive into the game's mods folder. 
+
+`--keep-archive` Prevents the archive from being deleted on completion.
+`--rebuild` Rebuilds the merged dir after installation.
+
+`rebuild-mods.fish <game-name>`
+
+"Rebuilds" the game's mods into the game's merged dir. This should be done after installing or uninstalling mods or any manual edits to the mods folders.
 
 `start-game.fish <game-name>`
 
 Starts the game from the `run` dir with all mods overlayed. Will start an overlayfs mount before starting and will unmount after the game exits.
 
-`list.fish <game-name>`
+`bootstrap-game.fish <game-name>`
+
+Prepares any requirements before you can start modding your game. Should only be run once.
+
+`list-mods.fish <game-name>`
 
 Lists all installed mods in the game's `mods` dir.
 
 ## Supported games
 
 - Cyberpunk 2077
+    - Abbreviations: `cbp`, `cyberpunk`, `cyberpunk2077`
 
 ## Roadmap
 
@@ -68,4 +84,6 @@ Lists all installed mods in the game's `mods` dir.
 - [ ] Configurable proton version
 - [ ] General configuration (game or install paths)
 - [ ] Nexus mods integration (Downloading games using their API)
-- [ ] Optimize the way mods are merged (Merge on install new mod or separate "merge" script)
+- [x] Rebuild mods script
+- [x] Uninstall script
+- [ ] Non steam game support

@@ -22,5 +22,5 @@ function warn
 end
 
 function err
-    echo -e "$C_ERR$argv$C_RST"
+    echo -e "✖ $C_ERR$argv$C_RST" >&2
 end

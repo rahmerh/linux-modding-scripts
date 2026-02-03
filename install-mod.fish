@@ -1,7 +1,10 @@
 #!/usr/bin/env fish
 
-set script_dir (path dirname (status --current-filename))
+set -l script_dir (path dirname (realpath (status --current-filename)))
+
 source "$script_dir/lib/log.fish"
+source "$script_dir/lib/tools.fish"
+source "$script_dir/lib/games.fish"
 
 # ---- flags ----
 set keep_archive 0
@@ -9,20 +12,28 @@ if contains -- --keep-archive $argv
     set keep_archive 1
     set argv (string match -v -- '--keep-archive' $argv)
 end
+
+set rebuild 0
+if contains -- --rebuild $argv
+    set rebuild 1
+    set argv (string match -v -- '--rebuild' $argv)
+end
 # --------------
 
 if test (count $argv) -ne 2
-    err "Usage: install-mod.fish <game-name> <archive-path>"
+    err "Usage: install-mod.fish <game-name> <archive-path> [--keep-archive] [--rebuild]"
     exit 1
 end
 
-if not command -q gum
-    err "gum is not installed"
-    exit 1
-end
+require_tool gum; or exit 1
 
 set game $argv[1]
 set archive (realpath $argv[2])
+
+set game (resolve_game "$game"; or begin
+    err "Unknown game: $game"
+    exit 1
+end)
 
 if not test -f "$archive"
     err "Archive not found: $archive"
@@ -150,20 +161,11 @@ step "Destination: $target_dir"
 
 switch (string lower "$archive")
     case '*.zip'
-        if not command -q unzip
-            err "Missing required tool: unzip"
-            exit 1
-        end
+        require_tool unzip; or exit 1
     case '*.7z'
-        if not command -q 7z
-            err "Missing required tool: 7z"
-            exit 1
-        end
+        require_tool 7z; or exit 1
     case '*.rar'
-        if not command -q unrar
-            err "Missing required tool: unrar"
-            exit 1
-        end
+        require_tool unrar; or exit 1
     case '*'
         err "Unsupported archive format: $archive"
         rm -rf "$target_dir"
@@ -181,6 +183,10 @@ switch (string lower "$archive")
         err "Unsupported archive format: $archive"
         rm -rf "$target_dir"
         exit 1
+end
+
+if test $rebuild -eq 1
+    fish "$script_dir/rebuild-mods.fish" "$game"
 end
 
 ok "Installation complete"
